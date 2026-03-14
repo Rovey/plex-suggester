@@ -91,12 +91,20 @@ nav {
 }
 
 .nav-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--text);
     text-decoration: none;
     letter-spacing: -0.01em;
     transition: opacity var(--transition);
+}
+
+.nav-logo {
+    color: var(--accent);
+    line-height: 0;
 }
 
 .nav-brand:hover { opacity: 0.85; }

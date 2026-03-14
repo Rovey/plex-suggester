@@ -1,15 +1,18 @@
+{% from "partials/icons.html" import icon_logo %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Plex Suggester{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <meta name="theme-color" content="#1c1c24">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
     <nav>
-        <a href="/" class="nav-brand">Plex Suggester</a>
+        <a href="/" class="nav-brand"><span class="nav-logo">{{ icon_logo("icon-lg") }}</span> Plex Suggester</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="toggleNav()"><span></span></button>
         <div class="nav-links" id="navLinks">
             <a href="/"{% if request.url.path == '/' %} class="active"{% endif %}>Suggestions</a>
