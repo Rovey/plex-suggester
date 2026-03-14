@@ -14,7 +14,7 @@
     {% endif %}
 
     <div class="results-header">
-        <h1>{{ mode_label(suggestion.mode.value, "icon-md") }}</h1>
+        <h1>{{ mode_label(suggestion.mode.value, "icon-xl") }}</h1>
         <div class="suggestion-meta" aria-label="Suggestion details">
             <span>{{ icon_clock("icon-sm") }} {{ suggestion.total_display }}</span>
             <span>{{ icon_film("icon-sm") }} {{ suggestion.movies|length }} film{{ 's' if suggestion.movies|length != 1 }}</span>
