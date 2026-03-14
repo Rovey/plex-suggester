@@ -8,10 +8,12 @@
     --bg-input: #1e1e26;
     --bg-nav: rgba(28, 28, 36, 0.92);
     --text: #d5d0cc;
-    --text-muted: #857f7a;
+    --text-muted: #9a9590;
     --accent: #c08070;
     --accent-hover: #cfa090;
     --accent-glow: rgba(192, 128, 112, 0.12);
+    --color-rating: #c9a84c;
+    --bg-hover: rgba(255, 255, 255, 0.05);
     --border: #2e2c34;
     --border-hover: #3c3a42;
     --radius: 8px;
@@ -117,7 +119,7 @@ nav {
 
 .nav-links a:hover {
     color: var(--text);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
 }
 
 .nav-links a.active {
@@ -249,8 +251,8 @@ p {
 .btn-primary {
     background: var(--accent);
     border-color: var(--accent);
-    color: #fff;
-    font-weight: 500;
+    color: var(--bg);
+    font-weight: 600;
 }
 
 .btn-primary:hover {
@@ -448,7 +450,7 @@ p {
     flex-wrap: wrap;
 }
 
-.movie-rating { color: #c9a84c; font-weight: 500; }
+.movie-rating { color: var(--color-rating); font-weight: 500; }
 
 .movie-genres {
     font-size: 0.82rem;
@@ -704,7 +706,7 @@ footer a:hover { opacity: 0.75; }
 
     .nav-links a:hover,
     .nav-links a.active {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--bg-hover);
     }
 
     main {
