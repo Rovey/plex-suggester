@@ -21,7 +21,7 @@
         <form action="/exclude" method="post" class="exclude-form">
             <input type="hidden" name="rating_key" value="{{ movie.rating_key }}">
             <input type="hidden" name="title" value="{{ movie.title }}">
-            <input type="text" name="reason" placeholder="Reason (optional)" aria-label="Reason for excluding {{ movie.title }}" class="exclude-reason">
+            <input type="hidden" name="reason" value="">
             <button type="submit" class="btn btn-small btn-exclude">{{ icon_x_circle("icon-sm") }} Exclude</button>
         </form>
     </div>

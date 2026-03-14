@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% from "partials/icons.html" import icon_no_symbol, icon_check_circle %}
+{% from "partials/icons.html" import icon_no_symbol, icon_check_circle, icon_film %}
 {% block title %}Exclude List — Plex Suggester{% endblock %}
 
 {% block content %}
-<h1>{{ icon_no_symbol("icon-md") }} Excluded films</h1>
+<h1>Excluded films</h1>
 
 {% if excluded %}
-    <p>{{ excluded|length }} film(s) excluded from suggestions.</p>
+    <p>{{ excluded|length }} film{{ 's' if excluded|length != 1 }} excluded from suggestions.</p>
     <div class="excluded-list">
         {% for item in excluded %}
             <div class="excluded-item">
@@ -26,10 +26,11 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <span class="empty-state-icon">{{ icon_check_circle("icon-2xl") }}</span>
-        <p>No excluded films. All unwatched films are available for suggestions.</p>
+        <span class="empty-state-icon">{{ icon_film("icon-2xl") }}</span>
+        <p>Nothing excluded yet. When you see a film you'll never watch, hit Exclude on any suggestion.</p>
+        <a href="/" class="btn btn-primary" style="margin-top:1.25rem;">Get a suggestion</a>
     </div>
 {% endif %}
 
-<a href="/" class="btn">← Back</a>
+<a href="/" class="btn">Back</a>
 {% endblock %}
