@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <a href="#main" class="skip-link">Skip to content</a>
     <nav>
         <a href="/" class="nav-brand">Plex Suggester</a>
-        <button class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="toggleNav()"><span></span></button>
+        <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="toggleNav()"><span></span></button>
         <div class="nav-links" id="navLinks">
             <a href="/"{% if request.url.path == '/' %} class="active"{% endif %}>Suggestions</a>
             <a href="/excluded"{% if request.url.path == '/excluded' %} class="active"{% endif %}>Exclude List</a>
@@ -17,7 +18,7 @@
         </div>
     </nav>
     <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
-    <main>
+    <main id="main">
         {% block content %}{% endblock %}
     </main>
     <footer>Plex Suggester — Your personal movie guide</footer>
