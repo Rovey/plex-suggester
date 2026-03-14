@@ -270,6 +270,11 @@ p {
     box-shadow: var(--shadow-sm);
 }
 
+.btn:active {
+    opacity: 0.8;
+    transition-duration: 0.05s;
+}
+
 .btn-primary {
     background: var(--accent);
     border-color: var(--accent);
@@ -283,6 +288,10 @@ p {
     background: var(--accent-hover);
     border-color: var(--accent-hover);
     box-shadow: 0 4px 20px rgba(192, 128, 112, 0.25);
+}
+
+.btn-primary:active {
+    opacity: 0.85;
 }
 
 .btn-small {
@@ -387,10 +396,27 @@ p {
 }
 
 .param-field {
-    margin-bottom: 1rem;
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.25, 0, 0.35, 1), opacity 0.3s cubic-bezier(0.25, 0, 0.35, 1);
+    opacity: 1;
+}
+
+.param-field--hidden {
+    grid-template-rows: 0fr;
+    opacity: 0;
+}
+
+.param-field-inner {
+    overflow: hidden;
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.param-field--hidden .param-field-inner {
+    margin-bottom: 0;
 }
 
 .param-field label {
@@ -398,6 +424,7 @@ p {
     width: 160px;
     font-weight: 500;
     color: var(--text);
+    white-space: nowrap;
 }
 
 .param-field input[type="number"] {
@@ -421,6 +448,7 @@ p {
 
 .param-field input[type="number"]:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 /* ── Movie grid ──────────────────────────────────── */
@@ -463,6 +491,18 @@ p {
     aspect-ratio: 2/3;
     object-fit: cover;
     display: block;
+}
+
+/* Poster fade-in on load */
+.movie-poster,
+.movie-hero-poster {
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.25, 0, 0.35, 1);
+}
+
+.movie-poster.loaded,
+.movie-hero-poster.loaded {
+    opacity: 1;
 }
 
 .movie-poster-placeholder {
@@ -557,6 +597,7 @@ p {
 
 .exclude-reason:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .exclude-reason::placeholder { color: var(--text-muted); }
@@ -571,11 +612,16 @@ p {
     height: 50vh;
     background-size: cover;
     background-position: center top;
-    opacity: 0.04;
     pointer-events: none;
     z-index: -1;
     mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
     -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
+    animation: backdropReveal 1.8s cubic-bezier(0.25, 0, 0.35, 1) both;
+}
+
+@keyframes backdropReveal {
+    from { opacity: 0; }
+    to { opacity: 0.04; }
 }
 
 .results-header {
@@ -794,6 +840,12 @@ p {
     display: block;
     opacity: 0.3;
     color: var(--accent);
+    animation: breathe 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes breathe {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.18; }
 }
 
 .empty-state p {
@@ -976,17 +1028,17 @@ footer a:hover { opacity: 0.75; }
         box-shadow: none;
     }
 
-    .param-field {
+    .param-field-inner {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.4rem;
     }
 
-    .param-field label {
+    .param-field-inner label {
         width: auto;
     }
 
-    .param-field input[type="number"] {
+    .param-field-inner input[type="number"] {
         width: 100%;
     }
 

@@ -62,6 +62,18 @@
             e.target.parentNode.insertBefore(placeholder, e.target.nextSibling);
         }
     }, true);
+
+    /* Poster fade-in on load */
+    document.addEventListener('load', function(e) {
+        if (e.target.tagName === 'IMG' && (e.target.classList.contains('movie-poster') || e.target.classList.contains('movie-hero-poster'))) {
+            e.target.classList.add('loaded');
+        }
+    }, true);
+
+    /* Handle already-cached images */
+    document.querySelectorAll('.movie-poster, .movie-hero-poster').forEach(function(img) {
+        if (img.complete && img.naturalWidth > 0) img.classList.add('loaded');
+    });
     </script>
 </body>
 </html>
