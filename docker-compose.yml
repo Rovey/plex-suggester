@@ -1,0 +1,15 @@
+services:
+  plex-suggester:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PLEX_TOKEN=${PLEX_TOKEN}
+      - PLEX_SERVER_URL=${PLEX_SERVER_URL}
+      - DATA_DIR=/data
+    volumes:
+      - plex-suggester-data:/data
+    restart: unless-stopped
+
+volumes:
+  plex-suggester-data:

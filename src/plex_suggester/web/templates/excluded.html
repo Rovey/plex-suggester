@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon_no_symbol, icon_check_circle %}
+{% block title %}Exclude Lijst — Plex Suggester{% endblock %}
+
+{% block content %}
+<h1>{{ icon_no_symbol("icon-md") }} Ge-exclude films</h1>
+
+{% if excluded %}
+    <p>{{ excluded|length }} film(s) worden niet gesuggereerd.</p>
+    <div class="excluded-list">
+        {% for item in excluded %}
+            <div class="excluded-item">
+                <div class="excluded-info">
+                    <strong>{{ item.title }}</strong>
+                    {% if item.reason %}
+                        <span class="excluded-reason">— {{ item.reason }}</span>
+                    {% endif %}
+                    <span class="excluded-date">{{ item.excluded_at[:10] }}</span>
+                </div>
+                <form action="/unexclude" method="post" class="inline-form">
+                    <input type="hidden" name="rating_key" value="{{ item.rating_key }}">
+                    <button type="submit" class="btn btn-small">{{ icon_check_circle("icon-sm") }} Weer toelaten</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <span class="empty-state-icon">{{ icon_check_circle("icon-2xl") }}</span>
+        <p>Geen ge-exclude films. Alle onbekeken films zijn beschikbaar voor suggesties.</p>
+    </div>
+{% endif %}
+
+<a href="/" class="btn">← Terug</a>
+{% endblock %}

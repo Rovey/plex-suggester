@@ -1,0 +1,28 @@
+{% from "partials/icons.html" import icon_film, icon_star_solid, icon_x_circle %}
+<div class="movie-card">
+    {% if movie.poster_url %}
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster" loading="lazy">
+    {% else %}
+        <div class="movie-poster movie-poster-placeholder">{{ icon_film("icon-2xl") }}</div>
+    {% endif %}
+    <div class="movie-info">
+        <h3 class="movie-title">{{ movie.title }}</h3>
+        <div class="movie-meta">
+            <span>{{ movie.year or '?' }}</span>
+            <span>{{ movie.duration_display }}</span>
+            {% if movie.rating is not none %}
+                <span class="movie-rating">{{ icon_star_solid("icon-xs") }} {{ "%.1f"|format(movie.rating) }}</span>
+            {% endif %}
+        </div>
+        <div class="movie-genres">{{ movie.genres[:3]|join(", ") if movie.genres else "—" }}</div>
+        {% if movie.summary %}
+            <p class="movie-summary">{{ movie.summary[:200] }}{% if movie.summary|length > 200 %}…{% endif %}</p>
+        {% endif %}
+        <form action="/exclude" method="post" class="exclude-form">
+            <input type="hidden" name="rating_key" value="{{ movie.rating_key }}">
+            <input type="hidden" name="title" value="{{ movie.title }}">
+            <input type="text" name="reason" placeholder="Reden (optioneel)" class="exclude-reason">
+            <button type="submit" class="btn btn-small btn-exclude">{{ icon_x_circle("icon-sm") }} Exclude</button>
+        </form>
+    </div>
+</div>

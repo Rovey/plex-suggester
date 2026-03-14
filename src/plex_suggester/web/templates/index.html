@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon_star, icon_sparkles, icon_fire, icon_film, icon_grid, icon_clock, icon_calendar %}
+{% block title %}Plex Suggester — Kies je modus{% endblock %}
+
+{% block content %}
+<h1>Wat wil je kijken?</h1>
+
+<form action="/suggest" method="post" class="suggest-form">
+    <section class="form-section">
+        <h2>Suggestiemodus</h2>
+        <div class="mode-toggle">
+            <label class="mode-option">
+                <input type="radio" name="mode" value="top" checked>
+                <span class="mode-card">
+                    <span class="mode-icon">{{ icon_star("icon-lg") }}</span>
+                    <span class="mode-label">Top Picks</span>
+                    <span class="mode-desc">Must-see films</span>
+                </span>
+            </label>
+            <label class="mode-option">
+                <input type="radio" name="mode" value="random">
+                <span class="mode-card">
+                    <span class="mode-icon">{{ icon_sparkles("icon-lg") }}</span>
+                    <span class="mode-label">Random</span>
+                    <span class="mode-desc">Puur willekeurig</span>
+                </span>
+            </label>
+            <label class="mode-option">
+                <input type="radio" name="mode" value="guilty">
+                <span class="mode-card">
+                    <span class="mode-icon">{{ icon_fire("icon-lg") }}</span>
+                    <span class="mode-label">Guilty Pleasures</span>
+                    <span class="mode-desc">Trashy fun</span>
+                </span>
+            </label>
+        </div>
+    </section>
+
+    <section class="form-section">
+        <h2>Type suggestie</h2>
+        <div class="type-options">
+            <label class="type-option">
+                <input type="radio" name="suggestion_type" value="single" checked onchange="toggleFields()">
+                <span class="type-card">
+                    <span class="type-icon">{{ icon_film("icon-lg") }}</span>
+                    <span class="type-label">Enkele film</span>
+                </span>
+            </label>
+            <label class="type-option">
+                <input type="radio" name="suggestion_type" value="marathon-count" onchange="toggleFields()">
+                <span class="type-card">
+                    <span class="type-icon">{{ icon_grid("icon-lg") }}</span>
+                    <span class="type-label">Marathon (aantal)</span>
+                </span>
+            </label>
+            <label class="type-option">
+                <input type="radio" name="suggestion_type" value="marathon-time" onchange="toggleFields()">
+                <span class="type-card">
+                    <span class="type-icon">{{ icon_clock("icon-lg") }}</span>
+                    <span class="type-label">Marathon (tijd)</span>
+                </span>
+            </label>
+            <label class="type-option">
+                <input type="radio" name="suggestion_type" value="multiday" onchange="toggleFields()">
+                <span class="type-card">
+                    <span class="type-icon">{{ icon_calendar("icon-lg") }}</span>
+                    <span class="type-label">Meerdagen</span>
+                </span>
+            </label>
+        </div>
+    </section>
+
+    <section class="form-section form-params">
+        <div id="field-count" class="param-field" style="display:none;">
+            <label for="count">Aantal films:</label>
+            <input type="number" id="count" name="count" value="3" min="1" max="20">
+        </div>
+        <div id="field-hours" class="param-field" style="display:none;">
+            <label for="hours">Uren beschikbaar:</label>
+            <input type="number" id="hours" name="hours" value="8" min="1" max="24" step="0.5">
+        </div>
+        <div id="field-days" class="param-field" style="display:none;">
+            <label for="days">Aantal dagen:</label>
+            <input type="number" id="days" name="days" value="3" min="1" max="14">
+        </div>
+        <div id="field-hours-per-day" class="param-field" style="display:none;">
+            <label for="hours_per_day">Uren per dag:</label>
+            <input type="number" id="hours_per_day" name="hours_per_day" value="6" min="1" max="16" step="0.5">
+        </div>
+    </section>
+
+    <button type="submit" class="btn btn-primary">Geef suggesties</button>
+</form>
+
+<script>
+function toggleFields() {
+    const type = document.querySelector('input[name="suggestion_type"]:checked').value;
+    document.getElementById('field-count').style.display = type === 'marathon-count' ? '' : 'none';
+    document.getElementById('field-hours').style.display = type === 'marathon-time' ? '' : 'none';
+    document.getElementById('field-days').style.display = type === 'multiday' ? '' : 'none';
+    document.getElementById('field-hours-per-day').style.display = type === 'multiday' ? '' : 'none';
+}
+</script>
+{% endblock %}

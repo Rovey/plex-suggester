@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon_clock, mode_label %}
+{% block title %}Geschiedenis — Plex Suggester{% endblock %}
+
+{% block content %}
+<h1>{{ icon_clock("icon-md") }} Suggestie geschiedenis</h1>
+
+{% if entries %}
+    <div class="history-list">
+        {% for entry in entries %}
+            <div class="history-item">
+                <div class="history-header">
+                    <span class="history-mode">{{ mode_label(entry.mode, "icon-xs") }}</span>
+                    <span class="history-type">{{ entry.suggestion_type }}</span>
+                    <span class="history-date">{{ entry.created_at[:10] }}</span>
+                </div>
+                <div class="history-movies">
+                    {% for movie in entry.movies %}
+                        <span class="history-movie">{{ movie.title }} ({{ movie.year or '?' }})</span>
+                        {% if not loop.last %}<span class="history-sep">·</span>{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <span class="empty-state-icon">{{ icon_clock("icon-2xl") }}</span>
+        <p>Nog geen suggesties gegenereerd.</p>
+    </div>
+{% endif %}
+
+<a href="/" class="btn">← Terug</a>
+{% endblock %}
