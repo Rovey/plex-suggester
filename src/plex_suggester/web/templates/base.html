@@ -11,7 +11,7 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <nav>
+    <nav aria-label="Main navigation">
         <a href="/" class="nav-brand"><span class="nav-logo">{{ icon_logo("icon-lg") }}</span> Plex Suggester</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="toggleNav()"><span></span></button>
         <div class="nav-links" id="navLinks">
@@ -35,6 +35,33 @@
         toggle.classList.toggle('open', open);
         toggle.setAttribute('aria-expanded', open);
     }
+
+    /* Prevent double-submit on all forms */
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (form.dataset.submitted) {
+            e.preventDefault();
+            return;
+        }
+        form.dataset.submitted = 'true';
+        const btn = form.querySelector('button[type="submit"]');
+        if (btn) {
+            btn.classList.add('btn-loading');
+            btn.setAttribute('aria-disabled', 'true');
+        }
+    });
+
+    /* Broken image fallback */
+    document.addEventListener('error', function(e) {
+        if (e.target.tagName === 'IMG' && e.target.classList.contains('movie-poster') || e.target.classList.contains('movie-hero-poster')) {
+            e.target.style.display = 'none';
+            const placeholder = document.createElement('div');
+            placeholder.className = e.target.className + ' movie-poster-placeholder';
+            placeholder.setAttribute('role', 'img');
+            placeholder.setAttribute('aria-label', 'Poster unavailable');
+            e.target.parentNode.insertBefore(placeholder, e.target.nextSibling);
+        }
+    }, true);
     </script>
 </body>
 </html>

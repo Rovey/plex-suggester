@@ -9,7 +9,7 @@
     <p>{{ excluded|length }} film{{ 's' if excluded|length != 1 }} excluded from suggestions.</p>
     <div class="excluded-list">
         {% for item in excluded %}
-            <div class="excluded-item">
+            <article class="excluded-item">
                 <div class="excluded-info">
                     <strong>{{ item.title }}</strong>
                     {% if item.reason %}
@@ -21,7 +21,7 @@
                     <input type="hidden" name="rating_key" value="{{ item.rating_key }}">
                     <button type="submit" class="btn btn-small">{{ icon_check_circle("icon-sm") }} Restore</button>
                 </form>
-            </div>
+            </article>
         {% endfor %}
     </div>
 {% else %}

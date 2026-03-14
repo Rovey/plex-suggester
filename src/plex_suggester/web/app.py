@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import asdict
 from pathlib import Path
 
@@ -28,6 +29,7 @@ from plex_suggester.storage import (
 )
 
 BASE_DIR = Path(__file__).parent
+log = logging.getLogger(__name__)
 app = FastAPI(title="Plex Movie Suggester")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
@@ -57,7 +59,22 @@ async def suggest(
     days: int = Form(3),
     hours_per_day: float = Form(6),
 ):
-    movies = _get_filtered_movies()
+    # Clamp inputs to safe ranges
+    count = max(1, min(count, 20))
+    hours = max(1, min(hours, 24))
+    days = max(1, min(days, 14))
+    hours_per_day = max(1, min(hours_per_day, 16))
+
+    try:
+        movies = _get_filtered_movies()
+    except Exception:
+        log.exception("Failed to connect to Plex")
+        return templates.TemplateResponse("results.html", {
+            "request": request,
+            "error": "Could not reach your Plex server. Check that it\u2019s running and the connection details are correct.",
+            "suggestion": None,
+        })
+
     if not movies:
         return templates.TemplateResponse("results.html", {
             "request": request,
@@ -67,20 +84,28 @@ async def suggest(
 
     suggest_mode = SuggestMode(mode)
 
-    if suggestion_type == "single":
-        suggestion = suggest_single(movies, suggest_mode)
-        type_label = "single"
-    elif suggestion_type == "marathon-count":
-        suggestion = suggest_by_count(movies, count, suggest_mode)
-        type_label = f"marathon-{count}"
-    elif suggestion_type == "marathon-time":
-        suggestion = suggest_by_time(movies, hours, suggest_mode)
-        type_label = f"marathon-{hours}h"
-    elif suggestion_type == "multiday":
-        suggestion = suggest_multiday(movies, days, hours_per_day, suggest_mode)
-        type_label = f"multiday-{days}d-{hours_per_day}h"
-    else:
-        return RedirectResponse("/", status_code=303)
+    try:
+        if suggestion_type == "single":
+            suggestion = suggest_single(movies, suggest_mode)
+            type_label = "single"
+        elif suggestion_type == "marathon-count":
+            suggestion = suggest_by_count(movies, count, suggest_mode)
+            type_label = f"marathon-{count}"
+        elif suggestion_type == "marathon-time":
+            suggestion = suggest_by_time(movies, hours, suggest_mode)
+            type_label = f"marathon-{hours}h"
+        elif suggestion_type == "multiday":
+            suggestion = suggest_multiday(movies, days, hours_per_day, suggest_mode)
+            type_label = f"multiday-{days}d-{hours_per_day}h"
+        else:
+            return RedirectResponse("/", status_code=303)
+    except Exception:
+        log.exception("Suggestion generation failed")
+        return templates.TemplateResponse("results.html", {
+            "request": request,
+            "error": "Something went wrong generating suggestions. Try again or pick a different mode.",
+            "suggestion": None,
+        })
 
     # Save to history
     movies_data = [asdict(m) for m in suggestion.movies]
@@ -106,6 +131,8 @@ async def exclude_add(
     title: str = Form(...),
     reason: str = Form(""),
 ):
+    # Truncate reason to prevent abuse
+    reason = reason[:500].strip()
     exclude_movie(rating_key, title, reason)
     return RedirectResponse("/excluded", status_code=303)
 
@@ -121,7 +148,11 @@ async def exclude_remove(
 
 @app.get("/excluded", response_class=HTMLResponse)
 async def excluded_list(request: Request):
-    excluded = get_excluded_movies()
+    try:
+        excluded = get_excluded_movies()
+    except Exception:
+        log.exception("Failed to load excluded list")
+        excluded = []
     return templates.TemplateResponse("excluded.html", {
         "request": request,
         "excluded": excluded,
@@ -130,7 +161,11 @@ async def excluded_list(request: Request):
 
 @app.get("/history", response_class=HTMLResponse)
 async def history_page(request: Request):
-    entries = get_history(50)
+    try:
+        entries = get_history(50)
+    except Exception:
+        log.exception("Failed to load history")
+        entries = []
     return templates.TemplateResponse("history.html", {
         "request": request,
         "entries": entries,

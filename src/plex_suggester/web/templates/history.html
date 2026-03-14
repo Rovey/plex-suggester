@@ -8,7 +8,7 @@
 {% if entries %}
     <div class="history-list">
         {% for entry in entries %}
-            <div class="history-item">
+            <article class="history-item">
                 <div class="history-header">
                     <span class="history-mode">{{ mode_label(entry.mode, "icon-xs") }}</span>
                     <span class="history-type">{{ entry.suggestion_type }}</span>
@@ -20,7 +20,7 @@
                         {% if not loop.last %}<span class="history-sep">·</span>{% endif %}
                     {% endfor %}
                 </div>
-            </div>
+            </article>
         {% endfor %}
     </div>
 {% else %}

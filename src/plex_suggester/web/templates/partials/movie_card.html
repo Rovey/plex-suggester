@@ -1,7 +1,7 @@
 {% from "partials/icons.html" import icon_film, icon_star_solid, icon_x_circle %}
-<div class="movie-card">
+<article class="movie-card">
     {% if movie.poster_url %}
-        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster" loading="lazy">
+        <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}" class="movie-poster" loading="lazy">
     {% else %}
         <div class="movie-poster movie-poster-placeholder" role="img" aria-label="No poster available for {{ movie.title }}">{{ icon_film("icon-2xl") }}</div>
     {% endif %}
@@ -25,4 +25,4 @@
             <button type="submit" class="btn btn-small btn-exclude">{{ icon_x_circle("icon-sm") }} Exclude</button>
         </form>
     </div>
-</div>
+</article>

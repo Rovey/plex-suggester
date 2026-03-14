@@ -13,9 +13,9 @@
     <div class="results-backdrop" style="background-image: url('{{ suggestion.movies[0].poster_url }}');" aria-hidden="true"></div>
     {% endif %}
 
-    <div class="results-header">
+        <div class="results-header">
         <h1>{{ mode_label(suggestion.mode.value, "icon-md") }}</h1>
-        <div class="suggestion-meta">
+        <div class="suggestion-meta" aria-label="Suggestion details">
             <span>{{ icon_clock("icon-sm") }} {{ suggestion.total_display }}</span>
             <span>{{ icon_film("icon-sm") }} {{ suggestion.movies|length }} film{{ 's' if suggestion.movies|length != 1 }}</span>
         </div>
@@ -24,9 +24,9 @@
     {% if suggestion.movies|length == 1 %}
         {# ── Single film: cinematic hero ── #}
         {% set movie = suggestion.movies[0] %}
-        <div class="movie-hero">
+        <article class="movie-hero">
             {% if movie.poster_url %}
-                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-hero-poster">
+                <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}" class="movie-hero-poster" loading="lazy">
             {% else %}
                 <div class="movie-hero-poster movie-poster-placeholder" role="img" aria-label="No poster available for {{ movie.title }}">{{ icon_film("icon-2xl") }}</div>
             {% endif %}
@@ -46,11 +46,11 @@
                 <form action="/exclude" method="post" class="exclude-form">
                     <input type="hidden" name="rating_key" value="{{ movie.rating_key }}">
                     <input type="hidden" name="title" value="{{ movie.title }}">
-                    <input type="text" name="reason" placeholder="Reason (optional)" aria-label="Reason for excluding {{ movie.title }}" class="exclude-reason">
+                    <input type="text" name="reason" placeholder="Reason (optional)" aria-label="Reason for excluding {{ movie.title }}" class="exclude-reason" maxlength="500">
                     <button type="submit" class="btn btn-small btn-exclude">{{ icon_x_circle("icon-sm") }} Exclude</button>
                 </form>
             </div>
-        </div>
+        </article>
 
     {% elif suggestion.days %}
         {# ── Multi-day: uniform grid per day ── #}
