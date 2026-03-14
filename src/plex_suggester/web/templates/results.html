@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% from "partials/icons.html" import icon_film, icon_clock, icon_calendar, icon_shuffle, mode_label %}
-{% block title %}Suggesties — Plex Suggester{% endblock %}
+{% block title %}Suggestions — Plex Suggester{% endblock %}
 
 {% block content %}
 {% if error %}
     <div class="error-box">{{ error }}</div>
-    <a href="/" class="btn">← Terug</a>
+    <a href="/" class="btn">← Back</a>
 {% elif suggestion %}
     <h1>{{ mode_label(suggestion.mode.value, "icon-md") }}</h1>
 
@@ -16,7 +16,7 @@
 
     {% if suggestion.days %}
         {% for day in suggestion.days %}
-            <h2>{{ icon_calendar("icon-sm") }} Dag {{ day.day }} ({{ day.total_display }})</h2>
+            <h2>{{ icon_calendar("icon-sm") }} Day {{ day.day }} ({{ day.total_display }})</h2>
             <div class="movie-grid">
                 {% for movie in day.movies %}
                     {% include "partials/movie_card.html" %}
@@ -41,7 +41,7 @@
             <input type="hidden" name="hours_per_day" value="{{ hours_per_day }}">
             <button type="submit" class="btn btn-primary">{{ icon_shuffle("icon-sm") }} Shuffle</button>
         </form>
-        <a href="/" class="btn">← Nieuwe keuze</a>
+        <a href="/" class="btn">← New pick</a>
     </div>
 {% endif %}
 {% endblock %}

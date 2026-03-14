@@ -54,14 +54,14 @@ def _print_suggestion(suggestion: Suggestion, suggestion_type: str) -> None:
 
     if suggestion.days:
         for day in suggestion.days:
-            click.echo(f"\n📅 Dag {day.day} ({day.total_display})")
+            click.echo(f"\n📅 Day {day.day} ({day.total_display})")
             for movie in day.movies:
                 _print_movie(movie)
     else:
         for movie in suggestion.movies:
             _print_movie(movie)
 
-    click.echo(f"\n⏱  Totaal: {suggestion.total_display}")
+    click.echo(f"\n⏱  Total: {suggestion.total_display}")
     click.echo(f"🎬 {len(suggestion.movies)} film(s)")
 
     # Save to history

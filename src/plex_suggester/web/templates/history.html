@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% from "partials/icons.html" import icon_clock, mode_label %}
-{% block title %}Geschiedenis — Plex Suggester{% endblock %}
+{% block title %}History — Plex Suggester{% endblock %}
 
 {% block content %}
-<h1>{{ icon_clock("icon-md") }} Suggestie geschiedenis</h1>
+<h1>{{ icon_clock("icon-md") }} Suggestion history</h1>
 
 {% if entries %}
     <div class="history-list">
@@ -26,9 +26,9 @@
 {% else %}
     <div class="empty-state">
         <span class="empty-state-icon">{{ icon_clock("icon-2xl") }}</span>
-        <p>Nog geen suggesties gegenereerd.</p>
+        <p>No suggestions generated yet.</p>
     </div>
 {% endif %}
 
-<a href="/" class="btn">← Terug</a>
+<a href="/" class="btn">← Back</a>
 {% endblock %}

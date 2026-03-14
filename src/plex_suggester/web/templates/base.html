@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,16 +11,16 @@
         <a href="/" class="nav-brand">Plex Suggester</a>
         <button class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="toggleNav()"><span></span></button>
         <div class="nav-links" id="navLinks">
-            <a href="/"{% if request.url.path == '/' %} class="active"{% endif %}>Suggesties</a>
-            <a href="/excluded"{% if request.url.path == '/excluded' %} class="active"{% endif %}>Exclude Lijst</a>
-            <a href="/history"{% if request.url.path == '/history' %} class="active"{% endif %}>Geschiedenis</a>
+            <a href="/"{% if request.url.path == '/' %} class="active"{% endif %}>Suggestions</a>
+            <a href="/excluded"{% if request.url.path == '/excluded' %} class="active"{% endif %}>Exclude List</a>
+            <a href="/history"{% if request.url.path == '/history' %} class="active"{% endif %}>History</a>
         </div>
     </nav>
     <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
     <main>
         {% block content %}{% endblock %}
     </main>
-    <footer>Plex Suggester — Jouw persoonlijke film&shy;gids</footer>
+    <footer>Plex Suggester — Your personal movie guide</footer>
     <script>
     function toggleNav() {
         const links = document.getElementById('navLinks');

@@ -61,7 +61,7 @@ async def suggest(
     if not movies:
         return templates.TemplateResponse("results.html", {
             "request": request,
-            "error": "Geen onbekeken films gevonden (of alles is ge-excludet).",
+            "error": "No unwatched films found (or all are excluded).",
             "suggestion": None,
         })
 
