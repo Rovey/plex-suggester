@@ -218,8 +218,8 @@ main {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 h1 {
@@ -260,7 +260,7 @@ p {
     font-size: 0.95rem;
     font-weight: 500;
     min-height: 44px;
-    transition: all var(--transition);
+    transition: border-color var(--transition), background var(--transition), box-shadow var(--transition), opacity var(--transition);
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -358,7 +358,7 @@ p {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: all var(--transition);
+    transition: border-color var(--transition), background var(--transition), transform var(--transition), box-shadow var(--transition);
     background: var(--bg-alt);
     text-align: center;
 }
@@ -476,8 +476,8 @@ p {
 .movie-card:nth-child(6) { animation-delay: 0.5s; }
 
 @keyframes cardReveal {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .movie-card:hover {
@@ -491,6 +491,7 @@ p {
     aspect-ratio: 2/3;
     object-fit: cover;
     display: block;
+    position: relative;
 }
 
 /* Poster fade-in on load */
@@ -520,14 +521,6 @@ p {
     position: absolute;
     inset: 0;
     background: var(--bg-alt);
-}
-
-.movie-poster {
-    position: relative;
-}
-
-.movie-hero-poster {
-    position: relative;
 }
 
 .movie-info {
@@ -652,6 +645,7 @@ p {
     border-radius: var(--radius-lg);
     display: block;
     box-shadow: var(--shadow-poster);
+    position: relative;
 }
 
 .movie-hero-info {
@@ -853,6 +847,10 @@ p {
     max-width: 360px;
     margin: 0 auto;
     line-height: 1.6;
+}
+
+.empty-state .btn {
+    margin-top: 1.25rem;
 }
 
 /* ── Error ───────────────────────────────────────── */

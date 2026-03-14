@@ -53,7 +53,7 @@
 
     /* Broken image fallback */
     document.addEventListener('error', function(e) {
-        if (e.target.tagName === 'IMG' && e.target.classList.contains('movie-poster') || e.target.classList.contains('movie-hero-poster')) {
+        if (e.target.tagName === 'IMG' && (e.target.classList.contains('movie-poster') || e.target.classList.contains('movie-hero-poster'))) {
             e.target.style.display = 'none';
             const placeholder = document.createElement('div');
             placeholder.className = e.target.className + ' movie-poster-placeholder';
