@@ -12,16 +12,19 @@
     --accent: #c08070;
     --accent-hover: #cfa090;
     --accent-glow: rgba(192, 128, 112, 0.12);
+    --accent-glow-strong: rgba(192, 128, 112, 0.18);
     --color-rating: #c9a84c;
     --bg-hover: rgba(255, 255, 255, 0.05);
     --border: #2e2c34;
     --border-hover: #3c3a42;
     --radius: 8px;
-    --radius-lg: 10px;
+    --radius-lg: 12px;
     --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.15);
-    --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+    --shadow-poster: 0 8px 40px rgba(0, 0, 0, 0.5);
     --transition: 0.2s cubic-bezier(0.25, 0, 0.35, 1);
+    --transition-slow: 0.4s cubic-bezier(0.25, 0, 0.35, 1);
     --nav-height: 64px;
 }
 
@@ -204,34 +207,34 @@ nav {
 /* ── Main ────────────────────────────────────────── */
 
 main {
-    max-width: 1040px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 2.5rem 1.25rem 4rem;
+    padding: 3rem 1.5rem 5rem;
     width: 100%;
     flex: 1;
-    animation: fadeIn 0.6s ease-out;
+    animation: fadeIn 0.7s cubic-bezier(0.25, 0, 0.35, 1);
     position: relative;
     z-index: 1;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 h1 {
-    font-size: 1.65rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-    line-height: 1.25;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.75rem;
+    line-height: 1.15;
 }
 
 h2 {
     font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: -0.01em;
-    margin: 2.25rem 0 1rem;
+    margin: 2.5rem 0 1.15rem;
     color: var(--text);
 }
 
@@ -272,11 +275,14 @@ p {
     border-color: var(--accent);
     color: var(--bg);
     font-weight: 600;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
 }
 
 .btn-primary:hover {
     background: var(--accent-hover);
     border-color: var(--accent-hover);
+    box-shadow: 0 4px 20px rgba(192, 128, 112, 0.25);
 }
 
 .btn-small {
@@ -290,10 +296,10 @@ p {
 
 /* ── Form ────────────────────────────────────────── */
 
-.suggest-form { margin-top: 0.5rem; }
+.suggest-form { margin-top: 1rem; }
 
 .form-section {
-    margin-bottom: 2.25rem;
+    margin-bottom: 2.75rem;
     padding: 0;
     background: transparent;
     border: none;
@@ -316,8 +322,8 @@ p {
 
 .mode-toggle, .type-options {
     display: grid;
-    gap: 0.75rem;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .mode-option input, .type-option input {
@@ -339,9 +345,9 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1rem;
+    padding: 1.35rem 1rem;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     cursor: pointer;
     transition: all var(--transition);
     background: var(--bg-alt);
@@ -351,29 +357,33 @@ p {
 .mode-card:hover, .type-card:hover {
     border-color: var(--border-hover);
     background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .mode-option input:checked + .mode-card,
 .type-option input:checked + .type-card {
     border-color: var(--accent);
-    background: var(--accent-glow);
+    background: var(--accent-glow-strong);
+    box-shadow: 0 0 0 1px var(--accent), var(--shadow-md);
 }
 
 .mode-icon, .type-icon {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.4rem;
     line-height: 1;
+    color: var(--accent);
 }
 
 .mode-label, .type-label {
-    font-weight: 500;
-    font-size: 0.92rem;
+    font-weight: 600;
+    font-size: 0.95rem;
     line-height: 1.3;
 }
 
 .mode-desc {
     font-size: 0.8rem;
     color: var(--text-muted);
-    margin-top: 0.15rem;
+    margin-top: 0.2rem;
 }
 
 .param-field {
@@ -427,23 +437,25 @@ p {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    transition: border-color var(--transition);
-    animation: cardReveal 0.5s ease-out both;
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    animation: cardReveal 0.6s cubic-bezier(0.25, 0, 0.35, 1) both;
 }
 
-.movie-card:nth-child(2) { animation-delay: 0.08s; }
-.movie-card:nth-child(3) { animation-delay: 0.16s; }
-.movie-card:nth-child(4) { animation-delay: 0.24s; }
-.movie-card:nth-child(5) { animation-delay: 0.32s; }
-.movie-card:nth-child(6) { animation-delay: 0.40s; }
+.movie-card:nth-child(2) { animation-delay: 0.1s; }
+.movie-card:nth-child(3) { animation-delay: 0.2s; }
+.movie-card:nth-child(4) { animation-delay: 0.3s; }
+.movie-card:nth-child(5) { animation-delay: 0.4s; }
+.movie-card:nth-child(6) { animation-delay: 0.5s; }
 
 @keyframes cardReveal {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .movie-card:hover {
     border-color: var(--border-hover);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
 }
 
 .movie-poster {
@@ -552,12 +564,12 @@ p {
 
 .movie-hero {
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 2rem;
-    margin: 1.5rem 0 2rem;
+    grid-template-columns: 340px 1fr;
+    gap: 2.5rem;
+    margin: 2rem 0 2.5rem;
     position: relative;
     z-index: 1;
-    animation: cardReveal 0.5s ease-out both;
+    animation: cardReveal 0.6s cubic-bezier(0.25, 0, 0.35, 1) both;
 }
 
 .movie-hero-poster {
@@ -566,27 +578,27 @@ p {
     object-fit: cover;
     border-radius: var(--radius-lg);
     display: block;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-poster);
 }
 
 .movie-hero-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 .movie-hero-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
     margin: 0;
     color: var(--text);
 }
 
 .movie-hero-info .movie-meta {
-    font-size: 0.95rem;
+    font-size: 1rem;
     margin-bottom: 0;
 }
 
@@ -595,9 +607,9 @@ p {
 }
 
 .movie-hero-summary {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text-muted);
-    line-height: 1.65;
+    line-height: 1.7;
     max-width: 520px;
 }
 
@@ -734,15 +746,15 @@ p {
 
 .empty-state {
     text-align: center;
-    padding: 3.5rem 1.5rem;
+    padding: 5rem 1.5rem;
     color: var(--text-muted);
 }
 
 .empty-state-icon {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     display: block;
-    opacity: 0.4;
-    color: var(--text-muted);
+    opacity: 0.3;
+    color: var(--accent);
 }
 
 .empty-state p {
@@ -770,13 +782,14 @@ p {
 /* ── Footer ──────────────────────────────────────── */
 
 footer {
-    padding: 1.5rem 2rem;
+    padding: 2rem 2rem;
     text-align: center;
     color: var(--text-muted);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     border-top: 1px solid var(--border);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
     margin-top: auto;
+    opacity: 0.6;
 }
 
 footer a {
@@ -800,10 +813,10 @@ footer a:hover { opacity: 0.75; }
 @media (min-width: 1024px) {
     .movie-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
+        gap: 1.75rem;
     }
 
-    h1 { font-size: 1.85rem; }
+    h1 { font-size: 2.5rem; }
 }
 
 /* ── Responsive — Mobile (max 767px) ─────────────── */
@@ -860,11 +873,11 @@ footer a:hover { opacity: 0.75; }
         padding: 1.5rem 1rem 2.5rem;
     }
 
-    h1 { font-size: 1.5rem; }
+    h1 { font-size: 1.65rem; }
 
     .form-section {
         padding: 0;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .mode-toggle, .type-options {
@@ -885,10 +898,12 @@ footer a:hover { opacity: 0.75; }
 
     .mode-card:hover, .type-card:hover {
         transform: none;
+        box-shadow: none;
     }
 
     .movie-card:hover {
         transform: none;
+        box-shadow: none;
     }
 
     .param-field {
@@ -923,7 +938,7 @@ footer a:hover { opacity: 0.75; }
     }
 
     .movie-hero-title {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
     }
 
     .movie-grid--featured .movie-card:first-child {
