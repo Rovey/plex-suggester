@@ -5,8 +5,10 @@
 {% block content %}
 {% if error %}
     <div class="error-box" role="alert">{{ error }}</div>
-    <a href="/" class="btn">Back</a>
+    <a href="/" class="btn">Start over</a>
 {% elif suggestion %}
+
+    <div id="results-container" data-mode="{{ mode }}">
 
     {# ── Poster backdrop bleed ── #}
     {% if suggestion.movies[0].poster_url %}
@@ -24,7 +26,7 @@
     {% if suggestion.movies|length == 1 %}
         {# ── Single film: cinematic hero ── #}
         {% set movie = suggestion.movies[0] %}
-        <article class="movie-hero">
+        <article class="movie-hero" data-rating-key="{{ movie.rating_key }}">
             {% if movie.poster_url %}
                 <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}" class="movie-hero-poster" loading="lazy">
             {% else %}
@@ -43,12 +45,7 @@
                 {% if movie.summary %}
                     <p class="movie-hero-summary">{{ movie.summary[:400] }}{% if movie.summary|length > 400 %}…{% endif %}</p>
                 {% endif %}
-                <form action="/exclude" method="post" class="exclude-form">
-                    <input type="hidden" name="rating_key" value="{{ movie.rating_key }}">
-                    <input type="hidden" name="title" value="{{ movie.title }}">
-                    <input type="text" name="reason" placeholder="Reason (optional)" aria-label="Reason for excluding {{ movie.title }}" class="exclude-reason" maxlength="500">
-                    <button type="submit" class="btn btn-small btn-exclude">{{ icon_x_circle("icon-sm") }} Exclude</button>
-                </form>
+                <button type="button" class="btn btn-small btn-exclude" onclick="openExcludeModal('{{ movie.rating_key }}', '{{ movie.title|e }}')">{{ icon_x_circle("icon-sm") }} Exclude</button>
             </div>
         </article>
 
@@ -82,7 +79,8 @@
             <input type="hidden" name="hours_per_day" value="{{ hours_per_day }}">
             <button type="submit" class="btn btn-primary">{{ icon_shuffle("icon-sm") }} Shuffle</button>
         </form>
-        <a href="/" class="btn">New pick</a>
+        <a href="/" class="btn">Start over</a>
     </div>
+    </div>{# /results-container #}
 {% endif %}
 {% endblock %}

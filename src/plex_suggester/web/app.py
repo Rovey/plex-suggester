@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 import logging
+import random
 from dataclasses import asdict
 from pathlib import Path
 
 from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from plex_suggester.engine import (
     SuggestMode,
+    _get_weights,
     suggest_by_count,
     suggest_by_time,
     suggest_multiday,
@@ -78,7 +80,7 @@ async def suggest(
     if not movies:
         return templates.TemplateResponse("results.html", {
             "request": request,
-            "error": "No unwatched films found (or all are excluded).",
+            "error": "No unwatched films left. Try restoring some from your excluded list.",
             "suggestion": None,
         })
 
@@ -103,7 +105,7 @@ async def suggest(
         log.exception("Suggestion generation failed")
         return templates.TemplateResponse("results.html", {
             "request": request,
-            "error": "Something went wrong generating suggestions. Try again or pick a different mode.",
+            "error": "Something went wrong. Try shuffling again or pick a different option.",
             "suggestion": None,
         })
 
@@ -135,6 +137,46 @@ async def exclude_add(
     reason = reason[:500].strip()
     exclude_movie(rating_key, title, reason)
     return RedirectResponse("/excluded", status_code=303)
+
+
+@app.post("/api/exclude-and-replace")
+async def exclude_and_replace(
+    request: Request,
+    rating_key: str = Form(...),
+    title: str = Form(...),
+    reason: str = Form(""),
+    mode: str = Form("top"),
+    current_keys: str = Form(""),
+):
+    """Exclude a movie and return a replacement as rendered HTML."""
+    reason = reason[:500].strip()
+    exclude_movie(rating_key, title, reason)
+
+    # Parse rating keys of all currently shown movies (to avoid duplicates)
+    shown_keys = set(k.strip() for k in current_keys.split(",") if k.strip())
+    shown_keys.add(rating_key)  # also exclude the one we just removed
+
+    try:
+        movies = _get_filtered_movies()
+        # Remove all currently shown movies from the pool
+        pool = [m for m in movies if m.rating_key not in shown_keys]
+    except Exception:
+        log.exception("Failed to connect to Plex for replacement")
+        return JSONResponse({"html": "", "error": "Could not reach Plex server."}, status_code=500)
+
+    replacement = None
+    if pool:
+        suggest_mode = SuggestMode(mode)
+        weights = _get_weights(pool, suggest_mode)
+        replacement = random.choices(pool, weights=weights, k=1)[0]
+
+    if replacement:
+        html = templates.get_template("partials/movie_card.html").render(
+            movie=replacement, request=request
+        )
+        return JSONResponse({"html": html, "rating_key": replacement.rating_key})
+    else:
+        return JSONResponse({"html": "", "error": "No more movies available."})
 
 
 @app.post("/unexclude", response_class=HTMLResponse)

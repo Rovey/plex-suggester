@@ -3,10 +3,10 @@
 {% block title %}Exclude List — Plex Suggester{% endblock %}
 
 {% block content %}
-<h1>Excluded films</h1>
+<h1>Excluded</h1>
 
 {% if excluded %}
-    <p>{{ excluded|length }} film{{ 's' if excluded|length != 1 }} excluded from suggestions.</p>
+    <p>{{ excluded|length }} film{{ 's' if excluded|length != 1 }} hidden from suggestions.</p>
     <div class="excluded-list">
         {% for item in excluded %}
             <article class="excluded-item">
@@ -27,10 +27,10 @@
 {% else %}
     <div class="empty-state">
         <span class="empty-state-icon">{{ icon_film("icon-2xl") }}</span>
-        <p>Nothing excluded yet. When you see a film you'll never watch, hit Exclude on any suggestion.</p>
-        <a href="/" class="btn btn-primary">Get a suggestion</a>
+        <p>No films excluded yet. Tap "Exclude" on any suggestion to hide films you're not interested in.</p>
+        <a href="/" class="btn btn-primary">Pick a film</a>
     </div>
 {% endif %}
 
-<a href="/" class="btn">Back</a>
+<a href="/" class="btn">Back to suggestions</a>
 {% endblock %}

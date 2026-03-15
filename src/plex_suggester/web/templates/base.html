@@ -15,8 +15,8 @@
         <a href="/" class="nav-brand"><span class="nav-logo">{{ icon_logo("icon-lg") }}</span> Plex Suggester</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="toggleNav()"><span></span></button>
         <div class="nav-links" id="navLinks">
-            <a href="/"{% if request.url.path == '/' %} class="active"{% endif %}>Suggestions</a>
-            <a href="/excluded"{% if request.url.path == '/excluded' %} class="active"{% endif %}>Exclude List</a>
+            <a href="/"{% if request.url.path == '/' %} class="active"{% endif %}>Pick a film</a>
+            <a href="/excluded"{% if request.url.path == '/excluded' %} class="active"{% endif %}>Excluded</a>
             <a href="/history"{% if request.url.path == '/history' %} class="active"{% endif %}>History</a>
         </div>
     </nav>
@@ -74,6 +74,146 @@
     document.querySelectorAll('.movie-poster, .movie-hero-poster').forEach(function(img) {
         if (img.complete && img.naturalWidth > 0) img.classList.add('loaded');
     });
+    </script>
+
+    {# ── Exclude confirmation modal ── #}
+    <div class="modal-overlay" id="excludeModal" aria-hidden="true" role="dialog" aria-labelledby="excludeModalTitle">
+        <div class="modal">
+            <h3 id="excludeModalTitle">Not interested?</h3>
+            <p class="modal-movie-title" id="excludeMovieTitle"></p>
+            <p class="modal-desc">This film won't be suggested again. We'll swap in something else.</p>
+            <input type="text" id="excludeReason" placeholder="Why not? (optional)" class="exclude-reason modal-reason" maxlength="500" aria-label="Reason for excluding">
+            <div class="modal-actions">
+                <button type="button" class="btn" id="excludeCancel">Keep it</button>
+                <button type="button" class="btn btn-primary btn-exclude-confirm" id="excludeConfirm">
+                    <svg class="icon icon-sm" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    Skip this film
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* ── Exclude modal + card replacement logic ── */
+    (function() {
+        var modal = document.getElementById('excludeModal');
+        var titleEl = document.getElementById('excludeMovieTitle');
+        var reasonInput = document.getElementById('excludeReason');
+        var confirmBtn = document.getElementById('excludeConfirm');
+        var cancelBtn = document.getElementById('excludeCancel');
+        var pendingKey = '';
+        var pendingTitle = '';
+
+        window.openExcludeModal = function(ratingKey, title) {
+            pendingKey = ratingKey;
+            pendingTitle = title;
+            titleEl.textContent = title;
+            reasonInput.value = '';
+            modal.classList.add('open');
+            // Force reflow so opacity transition triggers after display:flex applies
+            modal.offsetHeight;
+            modal.classList.add('visible');
+            modal.setAttribute('aria-hidden', 'false');
+            reasonInput.focus();
+        };
+
+        function closeModal() {
+            modal.classList.remove('visible');
+            // Wait for fade-out then hide completely
+            setTimeout(function() {
+                modal.classList.remove('open');
+            }, 300);
+            modal.setAttribute('aria-hidden', 'true');
+            pendingKey = '';
+            pendingTitle = '';
+        }
+
+        cancelBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+        });
+
+        confirmBtn.addEventListener('click', function() {
+            if (!pendingKey) return;
+            confirmBtn.classList.add('btn-loading');
+            confirmBtn.setAttribute('aria-disabled', 'true');
+
+            // Capture values before closing modal
+            var excludeKey = pendingKey;
+            var excludeTitle = pendingTitle;
+            var excludeReason = reasonInput.value;
+
+            // Gather all currently visible rating keys
+            var cards = document.querySelectorAll('[data-rating-key]');
+            var keys = [];
+            cards.forEach(function(c) { keys.push(c.dataset.ratingKey); });
+
+            var container = document.getElementById('results-container');
+            var mode = container ? container.dataset.mode || 'top' : 'top';
+
+            var body = new FormData();
+            body.append('rating_key', excludeKey);
+            body.append('title', excludeTitle);
+            body.append('reason', excludeReason);
+            body.append('mode', mode);
+            body.append('current_keys', keys.join(','));
+
+            fetch('/api/exclude-and-replace', { method: 'POST', body: body })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    closeModal();
+                    confirmBtn.classList.remove('btn-loading');
+                    confirmBtn.removeAttribute('aria-disabled');
+
+                    var target = document.querySelector('[data-rating-key="' + excludeKey + '"]');
+                    if (!target) return;
+
+                    if (data.error && !data.html) {
+                        // No replacement available — just fade out
+                        target.classList.add('card-exit');
+                        target.addEventListener('animationend', function() { target.remove(); }, { once: true });
+                        return;
+                    }
+
+                    // Swap animation: fade old card out, then swap HTML and fade new card in
+                    target.classList.add('card-exit');
+                    target.addEventListener('animationend', function() {
+                        // Create a temporary container to parse the new HTML
+                        var temp = document.createElement('div');
+                        temp.innerHTML = data.html.trim();
+                        var newCard = temp.firstElementChild;
+                        if (newCard) {
+                            newCard.classList.add('card-enter');
+                            target.replaceWith(newCard);
+                            // Trigger poster fade-in for new card
+                            var img = newCard.querySelector('.movie-poster, .movie-hero-poster');
+                            if (img) {
+                                if (img.complete && img.naturalWidth > 0) {
+                                    img.classList.add('loaded');
+                                } else {
+                                    img.addEventListener('load', function() { img.classList.add('loaded'); }, { once: true });
+                                }
+                            }
+                            newCard.addEventListener('animationend', function() {
+                                newCard.classList.remove('card-enter');
+                            }, { once: true });
+                        } else {
+                            target.remove();
+                        }
+                    }, { once: true });
+                })
+                .catch(function() {
+                    closeModal();
+                    confirmBtn.classList.remove('btn-loading');
+                    confirmBtn.removeAttribute('aria-disabled');
+                });
+        });
+    })();
     </script>
 </body>
 </html>

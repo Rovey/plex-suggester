@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 {% from "partials/icons.html" import icon_star, icon_sparkles, icon_fire, icon_film, icon_grid, icon_clock, icon_calendar %}
-{% block title %}Plex Suggester — Pick your mode{% endblock %}
+{% block title %}Plex Suggester — What's on tonight?{% endblock %}
 
 {% block content %}
 <h1>What do you want to watch?</h1>
 
 <form action="/suggest" method="post" class="suggest-form">
     <section class="form-section">
-        <h2>Suggestion mode</h2>
+        <h2>How should we pick?</h2>
         <div class="mode-toggle">
             <label class="mode-option">
                 <input type="radio" name="mode" value="top" checked>
                 <span class="mode-card">
                     <span class="mode-icon">{{ icon_star("icon-xl") }}</span>
                     <span class="mode-label">Top Picks</span>
-                    <span class="mode-desc">Must-see films</span>
+                    <span class="mode-desc">Highest rated first</span>
                 </span>
             </label>
             <label class="mode-option">
@@ -22,7 +22,7 @@
                 <span class="mode-card">
                     <span class="mode-icon">{{ icon_sparkles("icon-xl") }}</span>
                     <span class="mode-label">Random</span>
-                    <span class="mode-desc">Pure random</span>
+                    <span class="mode-desc">Surprise me</span>
                 </span>
             </label>
             <label class="mode-option">
@@ -30,41 +30,41 @@
                 <span class="mode-card">
                     <span class="mode-icon">{{ icon_fire("icon-xl") }}</span>
                     <span class="mode-label">Guilty Pleasures</span>
-                    <span class="mode-desc">Trashy fun</span>
+                    <span class="mode-desc">So bad it's good</span>
                 </span>
             </label>
         </div>
     </section>
 
     <section class="form-section">
-        <h2>Suggestion type</h2>
+        <h2>How many films?</h2>
         <div class="type-options">
             <label class="type-option">
                 <input type="radio" name="suggestion_type" value="single" checked onchange="toggleFields()">
                 <span class="type-card">
                     <span class="type-icon">{{ icon_film("icon-lg") }}</span>
-                    <span class="type-label">Single film</span>
+                    <span class="type-label">Just one</span>
                 </span>
             </label>
             <label class="type-option">
                 <input type="radio" name="suggestion_type" value="marathon-count" onchange="toggleFields()">
                 <span class="type-card">
                     <span class="type-icon">{{ icon_grid("icon-lg") }}</span>
-                    <span class="type-label">Marathon (count)</span>
+                    <span class="type-label">Pick a number</span>
                 </span>
             </label>
             <label class="type-option">
                 <input type="radio" name="suggestion_type" value="marathon-time" onchange="toggleFields()">
                 <span class="type-card">
                     <span class="type-icon">{{ icon_clock("icon-lg") }}</span>
-                    <span class="type-label">Marathon (time)</span>
+                    <span class="type-label">Fill my evening</span>
                 </span>
             </label>
             <label class="type-option">
                 <input type="radio" name="suggestion_type" value="multiday" onchange="toggleFields()">
                 <span class="type-card">
                     <span class="type-icon">{{ icon_calendar("icon-lg") }}</span>
-                    <span class="type-label">Multi-day</span>
+                    <span class="type-label">Multi-day plan</span>
                 </span>
             </label>
         </div>
@@ -73,31 +73,31 @@
     <section class="form-section form-params">
         <div id="field-count" class="param-field param-field--hidden">
             <div class="param-field-inner">
-                <label for="count">Number of films:</label>
+                <label for="count">Films to suggest</label>
                 <input type="number" id="count" name="count" value="3" min="1" max="20">
             </div>
         </div>
         <div id="field-hours" class="param-field param-field--hidden">
             <div class="param-field-inner">
-                <label for="hours">Hours available:</label>
+                <label for="hours">Hours available</label>
                 <input type="number" id="hours" name="hours" value="8" min="1" max="24" step="0.5">
             </div>
         </div>
         <div id="field-days" class="param-field param-field--hidden">
             <div class="param-field-inner">
-                <label for="days">Number of days:</label>
+                <label for="days">Days</label>
                 <input type="number" id="days" name="days" value="3" min="1" max="14">
             </div>
         </div>
         <div id="field-hours-per-day" class="param-field param-field--hidden">
             <div class="param-field-inner">
-                <label for="hours_per_day">Hours per day:</label>
+                <label for="hours_per_day">Hours per day</label>
                 <input type="number" id="hours_per_day" name="hours_per_day" value="6" min="1" max="16" step="0.5">
             </div>
         </div>
     </section>
 
-    <button type="submit" class="btn btn-primary">Get suggestions</button>
+    <button type="submit" class="btn btn-primary">Pick for me</button>
 </form>
 
 <script>
