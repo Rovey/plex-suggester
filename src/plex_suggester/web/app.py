@@ -179,6 +179,39 @@ async def exclude_and_replace(
         return JSONResponse({"html": "", "error": "No more movies available."})
 
 
+@app.post("/api/swap")
+async def swap_card(
+    request: Request,
+    rating_key: str = Form(...),
+    mode: str = Form("top"),
+    current_keys: str = Form(""),
+):
+    """Return a replacement movie without excluding the current one."""
+    shown_keys = set(k.strip() for k in current_keys.split(",") if k.strip())
+    shown_keys.add(rating_key)
+
+    try:
+        movies = _get_filtered_movies()
+        pool = [m for m in movies if m.rating_key not in shown_keys]
+    except Exception:
+        log.exception("Failed to connect to Plex for swap")
+        return JSONResponse({"html": "", "error": "Could not reach Plex server."}, status_code=500)
+
+    replacement = None
+    if pool:
+        suggest_mode = SuggestMode(mode)
+        weights = _get_weights(pool, suggest_mode)
+        replacement = random.choices(pool, weights=weights, k=1)[0]
+
+    if replacement:
+        html = templates.get_template("partials/movie_card.html").render(
+            movie=replacement, request=request
+        )
+        return JSONResponse({"html": html, "rating_key": replacement.rating_key})
+    else:
+        return JSONResponse({"html": "", "error": "No more movies available."})
+
+
 @app.post("/unexclude", response_class=HTMLResponse)
 async def exclude_remove(
     request: Request,

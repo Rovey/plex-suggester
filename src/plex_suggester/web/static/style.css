@@ -1208,6 +1208,24 @@ footer a:hover { opacity: 0.75; }
     gap: 0.35rem;
 }
 
+/* ── Card action buttons ────────────────────────── */
+
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.btn-swap {
+    gap: 0.3rem;
+    opacity: 0.7;
+    transition: opacity var(--transition-base);
+}
+
+.btn-swap:hover {
+    opacity: 1;
+}
+
 /* ── Card swap animations ────────────────────────── */
 
 @keyframes cardExit {

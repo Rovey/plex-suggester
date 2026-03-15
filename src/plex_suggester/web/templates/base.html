@@ -94,6 +94,65 @@
     </div>
 
     <script>
+    /* ── Swap card logic (no exclude) ── */
+    window.swapCard = function(ratingKey, btnEl) {
+        btnEl.classList.add('btn-loading');
+        btnEl.setAttribute('aria-disabled', 'true');
+
+        var cards = document.querySelectorAll('[data-rating-key]');
+        var keys = [];
+        cards.forEach(function(c) { keys.push(c.dataset.ratingKey); });
+
+        var container = document.getElementById('results-container');
+        var mode = container ? container.dataset.mode || 'top' : 'top';
+
+        var body = new FormData();
+        body.append('rating_key', ratingKey);
+        body.append('mode', mode);
+        body.append('current_keys', keys.join(','));
+
+        fetch('/api/swap', { method: 'POST', body: body })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var target = document.querySelector('[data-rating-key="' + ratingKey + '"]');
+                if (!target) return;
+
+                if (data.error && !data.html) {
+                    target.classList.add('card-exit');
+                    target.addEventListener('animationend', function() { target.remove(); }, { once: true });
+                    return;
+                }
+
+                target.classList.add('card-exit');
+                target.addEventListener('animationend', function() {
+                    var temp = document.createElement('div');
+                    temp.innerHTML = data.html.trim();
+                    var newCard = temp.firstElementChild;
+                    if (newCard) {
+                        newCard.classList.add('card-enter');
+                        target.replaceWith(newCard);
+                        var img = newCard.querySelector('.movie-poster, .movie-hero-poster');
+                        if (img) {
+                            if (img.complete && img.naturalWidth > 0) {
+                                img.classList.add('loaded');
+                            } else {
+                                img.addEventListener('load', function() { img.classList.add('loaded'); }, { once: true });
+                            }
+                        }
+                        newCard.addEventListener('animationend', function() {
+                            newCard.classList.remove('card-enter');
+                        }, { once: true });
+                    } else {
+                        target.remove();
+                    }
+                }, { once: true });
+            })
+            .catch(function() {
+                btnEl.classList.remove('btn-loading');
+                btnEl.removeAttribute('aria-disabled');
+            });
+    };
+
     /* ── Exclude modal + card replacement logic ── */
     (function() {
         var modal = document.getElementById('excludeModal');

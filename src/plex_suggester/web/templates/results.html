@@ -45,7 +45,10 @@
                 {% if movie.summary %}
                     <p class="movie-hero-summary">{{ movie.summary[:400] }}{% if movie.summary|length > 400 %}…{% endif %}</p>
                 {% endif %}
-                <button type="button" class="btn btn-small btn-exclude" onclick="openExcludeModal('{{ movie.rating_key }}', '{{ movie.title|e }}')">{{ icon_x_circle("icon-sm") }} Exclude</button>
+                <div class="card-actions">
+                    <button type="button" class="btn btn-small btn-swap" onclick="swapCard('{{ movie.rating_key }}', this)">{{ icon_shuffle("icon-sm") }} Swap</button>
+                    <button type="button" class="btn btn-small btn-exclude" onclick="openExcludeModal('{{ movie.rating_key }}', '{{ movie.title|e }}')">{{ icon_x_circle("icon-sm") }} Exclude</button>
+                </div>
             </div>
         </article>
 
