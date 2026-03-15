@@ -108,10 +108,5 @@ function toggleFields() {
     document.getElementById('field-days').classList.toggle('param-field--hidden', type !== 'multiday');
     document.getElementById('field-hours-per-day').classList.toggle('param-field--hidden', type !== 'multiday');
 }
-
-document.querySelector('.suggest-form').addEventListener('submit', function() {
-    var btn = this.querySelector('button[type="submit"]');
-    btn.classList.add('btn-loading');
-});
 </script>
 {% endblock %}

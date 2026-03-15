@@ -85,14 +85,5 @@
         <a href="/" class="btn">Start over</a>
     </div>
     </div>{# /results-container #}
-
-<script>
-document.querySelectorAll('.inline-form').forEach(function(form) {
-    form.addEventListener('submit', function() {
-        var btn = this.querySelector('button[type="submit"]');
-        btn.classList.add('btn-loading');
-    });
-});
-</script>
 {% endif %}
 {% endblock %}
