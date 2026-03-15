@@ -881,20 +881,23 @@ p {
 
 .btn-loading {
     position: relative;
+    color: transparent !important;
     pointer-events: none;
 }
 
-.btn-loading > * {
-    visibility: hidden;
+.btn-loading svg,
+.btn-loading .icon {
+    opacity: 0;
 }
 
 .btn-loading::after {
     content: '';
     position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 18px;
-    height: 18px;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+    width: 16px;
+    height: 16px;
     border: 2px solid var(--text-muted);
     border-top-color: var(--text);
     border-radius: 50%;
