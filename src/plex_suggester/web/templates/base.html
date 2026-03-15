@@ -123,8 +123,7 @@
                     return;
                 }
 
-                target.classList.add('card-exit');
-                target.addEventListener('animationend', function() {
+                function doSwap() {
                     var temp = document.createElement('div');
                     temp.innerHTML = data.html.trim();
                     var newCard = temp.firstElementChild;
@@ -145,7 +144,20 @@
                     } else {
                         target.remove();
                     }
+                }
+
+                target.classList.add('card-exit');
+                // Use timeout as fallback in case animationend doesn't fire
+                var swapped = false;
+                function onceSwap() {
+                    if (swapped) return;
+                    swapped = true;
+                    doSwap();
+                }
+                target.addEventListener('animationend', function(e) {
+                    if (e.target === target) onceSwap();
                 }, { once: true });
+                setTimeout(onceSwap, 400);
             })
             .catch(function() {
                 btnEl.classList.remove('btn-loading');
@@ -240,16 +252,13 @@
                     }
 
                     // Swap animation: fade old card out, then swap HTML and fade new card in
-                    target.classList.add('card-exit');
-                    target.addEventListener('animationend', function() {
-                        // Create a temporary container to parse the new HTML
+                    function doExcludeSwap() {
                         var temp = document.createElement('div');
                         temp.innerHTML = data.html.trim();
                         var newCard = temp.firstElementChild;
                         if (newCard) {
                             newCard.classList.add('card-enter');
                             target.replaceWith(newCard);
-                            // Trigger poster fade-in for new card
                             var img = newCard.querySelector('.movie-poster, .movie-hero-poster');
                             if (img) {
                                 if (img.complete && img.naturalWidth > 0) {
@@ -264,7 +273,19 @@
                         } else {
                             target.remove();
                         }
+                    }
+
+                    target.classList.add('card-exit');
+                    var excludeSwapped = false;
+                    function onceExcludeSwap() {
+                        if (excludeSwapped) return;
+                        excludeSwapped = true;
+                        doExcludeSwap();
+                    }
+                    target.addEventListener('animationend', function(e) {
+                        if (e.target === target) onceExcludeSwap();
                     }, { once: true });
+                    setTimeout(onceExcludeSwap, 400);
                 })
                 .catch(function() {
                     closeModal();
